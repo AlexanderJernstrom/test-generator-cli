@@ -7,11 +7,10 @@ import (
 	"go/token"
 )
 
-func ReadFunctions(src string) ([]string, error) {
+func ReadFunctions(src string, exportedOnly bool, fileName string) ([]string, error) {
 	fileSet := token.NewFileSet()
 
-
-	file, err := parser.ParseFile(fileSet, "main.go", src, 0)
+	file, err := parser.ParseFile(fileSet, fileName, src, 0)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
@@ -25,13 +24,15 @@ func ReadFunctions(src string) ([]string, error) {
 		if !ok {
 			continue
 		}
-		
+		if exportedOnly {
+			ast.FileExports(file)
+		}
 
 		functionNames = append(functionNames, fn.Name.Name)
 
 	}
 
-	for i, name := range(functionNames) {
+	for i, name := range functionNames {
 		functionNames[i] = "Test" + name
 	}
 

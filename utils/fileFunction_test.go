@@ -14,10 +14,10 @@ func TestReadFunctions(t *testing.T) {
 	func calc() { 
 		fmt.Println("Hello, world") 
 	}`
-	
+
 	expectedNames := []string{"Testmain", "Testcalc"}
 
-	functionNames, err := ReadFunctions(code)
+	functionNames, err := ReadFunctions(code, false, "main.go")
 
 	if err != nil {
 		fmt.Println(err)

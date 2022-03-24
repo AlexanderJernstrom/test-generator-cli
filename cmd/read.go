@@ -12,10 +12,10 @@ func init() {
 }
 
 var readCommand = &cobra.Command{
-	Use: "read",
+	Use:   "read",
 	Short: "Gets all the functions in a .go file",
 	Run: func(cmd *cobra.Command, args []string) {
-		//pathToFile := args[0] 
+		//pathToFile := args[0]
 		const src = `package main  
 		func main() { 
 			 fmt.Println("Hello, world") 
@@ -24,20 +24,22 @@ var readCommand = &cobra.Command{
 		func calc() { 
 			fmt.Println("Hello, world") 
 		}`
-		functionNames, error := utils.ReadFunctions(src)
-
-		if error != nil {
-			fmt.Println(error)
-		}
-
-		for i, name := range functionNames {
-			fmt.Println(i, name)
-		}
 		files, err := utils.WalkDir()
+
+		for _, file := range files {
+			functionNames, error := utils.ReadFunctions(file.Content, true, file.Path)
+			utils.GetPackageName(file.Path, file.Content)
+			if error != nil {
+				fmt.Println(error)
+			}
+			for i, name := range functionNames {
+				fmt.Println(i, name)
+			}
+		}
 
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Println(files)
+		fmt.Println("Succes")
 	},
 }
