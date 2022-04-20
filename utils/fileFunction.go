@@ -24,9 +24,13 @@ func ReadFunctions(src string, exportedOnly bool, fileName string) ([]string, er
 		if !ok {
 			continue
 		}
+		if fn.Name.Name == "main" || fn.Name.Name == "init"{
+			continue;
+		}
 		if exportedOnly {
 			ast.FileExports(file)
 		}
+
 
 		functionNames = append(functionNames, fn.Name.Name)
 

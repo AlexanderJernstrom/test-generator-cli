@@ -4,11 +4,19 @@ import (
 	"fmt"
 	"test-generator/utils"
 
+	"strings"
+
 	"github.com/spf13/cobra"
 )
 
 func init() {
 	rootCmd.AddCommand(readCommand)
+}
+
+type FileWithTest struct {
+	FileName string
+	TestFileName string
+	FunctionNames []string
 }
 
 var readCommand = &cobra.Command{
@@ -26,6 +34,8 @@ var readCommand = &cobra.Command{
 		}`
 		files, err := utils.WalkDir()
 
+		var testFiles []FileWithTest = []FileWithTest{} 
+
 		for _, file := range files {
 			functionNames, error := utils.ReadFunctions(file.Content, true, file.Path)
 			utils.GetPackageName(file.Path, file.Content)
@@ -35,11 +45,15 @@ var readCommand = &cobra.Command{
 			for i, name := range functionNames {
 				fmt.Println(i, name)
 			}
+			fileTestName := strings.Split(file.Path, ".go")[0] + "_test.go"
+			testFiles = append(testFiles, FileWithTest{FileName: file.Path, TestFileName: fileTestName, FunctionNames: functionNames})
 		}
 
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Println("Succes")
+		
+		
+
 	},
 }
